@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soumendra Sir's Biology Classes - NEET Chemistry XI Exam Series 8 Set A</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for graphical feedback reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2canvas for secure report image generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body { user-select: none; -webkit-user-select: none; }
+        .dot-green { background-color: #22c55e; }
+        .dot-red { background-color: #ef4444; }
+        .dot-orange { background-color: #f97316; }
+        .dot-gray { background-color: #9ca3af; }
+        .watermark {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-content: space-around;
+            transform: rotate(-30deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans" oncontextmenu="return false;" oncopy="return false;" onpaste="return false;">
+
+    <!-- Dynamic Watermark for Security -->
+    <div id="watermark" class="watermark"></div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-8 border-t-8 border-indigo-600">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-indigo-900">Soumendra Sir' s Biology Classes-8910587106</h1>
+                <h2 class="text-lg font-semibold text-slate-600 mt-1">NEET CHEMISTRY XI EXAM SERIES 8 SET A</h2>
+                <p class="text-sm text-slate-500 mt-2 font-medium">Topic: Organic Chemistry (Basic Principles, Isomerism, Nomenclature, Electronic Displacements & Reactions)</p>
+            </div>
+
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 text-sm text-amber-800 rounded-r-lg">
+                <p class="font-bold mb-1">📌 Exam Rules & Information:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><strong>Total Questions:</strong> 45 Multiple Choice Questions (Total Marks: 180)</li>
+                    <li><strong>Marking Scheme:</strong> +4 for Correct Answer, -1 for Incorrect Answer, 0 for Unattempted.</li>
+                    <li><strong>Duration:</strong> 1 Hour (60 Minutes). Timer starts immediately upon entry.</li>
+                    <li><strong>Security:</strong> Full-screen mode is mandatory. Tab switching or exiting full-screen will trigger automatic submission warnings.</li>
+                    <li><strong>Password Format:</strong> Current Exam Date in DDMMYYYY format (e.g., 20102026 for October 20, 2026).</li>
+                </ul>
+            </div>
+
+            <form id="login-form" onsubmit="startExam(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Candidate Full Name:</label>
+                    <input type="text" id="candidate-name" required placeholder="Enter your full name" 
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Enter Captcha: <span id="captcha-display" class="bg-slate-200 px-2 py-0.5 rounded font-mono text-indigo-700 font-bold tracking-wider"></span></label>
+                        <input type="text" id="captcha-input" required placeholder="Enter captcha code" 
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Exam Password (DDMMYYYY):</label>
+                        <input type="password" id="exam-password" required placeholder="Enter DDMMYYYY" 
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-200 shadow-md">
+                    Start Secure Exam
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- EXAM INTERFACE -->
+    <div id="exam-screen" class="hidden min-h-screen flex flex-col">
+        <!-- Top Navbar -->
+        <header class="bg-indigo-900 text-white px-6 py-3 flex justify-between items-center shadow-md">
+            <div>
+                <h1 class="font-bold text-lg">Soumendra Sir' s Biology Classes-8910587106</h1>
+                <p class="text-xs text-indigo-200">NEET CHEMISTRY XI EXAM SERIES 8 SET A</p>
+            </div>
+            <div class="flex items-center space-x-6">
+                <div class="text-sm bg-indigo-800 px-3 py-1.5 rounded-lg border border-indigo-700">
+                    Candidate: <span id="nav-candidate-name" class="font-semibold text-amber-300"></span>
+                </div>
+                <div class="text-sm bg-red-600 text-white px-4 py-1.5 rounded-lg font-bold shadow-inner flex items-center space-x-2">
+                    <span>⏱ Time Left:</span>
+                    <span id="timer" class="font-mono text-base">60:00</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body Layout -->
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+            <!-- Question Panel (Left) -->
+            <div class="flex-1 p-6 overflow-y-auto bg-white flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center border-b pb-3 mb-4">
+                        <span id="q-category" class="text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full"></span>
+                        <span class="text-sm font-semibold text-slate-500">Question <span id="current-q-num">1</span> of 45</span>
+                    </div>
+
+                    <div id="question-text" class="text-lg font-medium text-slate-900 mb-6 leading-relaxed">
+                        <!-- Question content injected here -->
+                    </div>
+
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="border-t pt-4 flex justify-between items-center">
+                    <div class="space-x-2">
+                        <button onclick="markForReview()" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition">
+                            Mark for Review & Next
+                        </button>
+                        <button onclick="clearResponse()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition">
+                            Clear Response
+                        </button>
+                    </div>
+                    <div class="space-x-2">
+                        <button onclick="prevQuestion()" class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
+                            Previous
+                        </button>
+                        <button onclick="nextQuestion()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
+                            Save & Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Palette Sidebar (Right) -->
+            <div class="w-full md:w-80 bg-slate-50 border-l p-4 flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-700 mb-3 text-sm">Question Palette</h3>
+                    <div id="palette-grid" class="grid grid-cols-5 gap-2 max-h-[350px] overflow-y-auto p-1">
+                        <!-- Palette dots generated dynamically -->
+                    </div>
+
+                    <div class="mt-6 text-xs space-y-2 border-t pt-4">
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full dot-green inline-block"></span><span>Answered</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full dot-red inline-block"></span><span>Not Answered</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full dot-orange inline-block"></span><span>Marked for Review</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full dot-gray inline-block"></span><span>Not Visited</span></div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="confirmSubmit()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-200">
+                        Submit Exam
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT & FEEDBACK REPORT SCREEN -->
+    <div id="result-screen" class="hidden min-h-screen p-6 bg-slate-100 overflow-y-auto">
+        <div id="report-card" class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-8 border-t-8 border-emerald-600">
+            <div class="text-center border-b pb-6 mb-6">
+                <h1 class="text-2xl font-bold text-indigo-900">Soumendra Sir' s Biology Classes-8910587106</h1>
+                <h2 class="text-lg font-semibold text-slate-600">NEET CHEMISTRY XI EXAM SERIES 8 SET A - PERFORMANCE REPORT</h2>
+                <p class="text-sm text-slate-500 mt-1">Candidate: <span id="res-candidate-name" class="font-bold text-slate-800"></span></p>
+            </div>
+
+            <!-- Score Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-indigo-50 p-4 rounded-xl text-center border border-indigo-100">
+                    <p class="text-xs text-indigo-600 font-bold uppercase">Total Marks</p>
+                    <p class="text-2xl font-extrabold text-indigo-900 mt-1"><span id="res-score">0</span> / 180</p>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-xl text-center border border-emerald-100">
+                    <p class="text-xs text-emerald-600 font-bold uppercase">Correct</p>
+                    <p class="text-2xl font-extrabold text-emerald-700 mt-1" id="res-correct">0</p>
+                </div>
+                <div class="bg-rose-50 p-4 rounded-xl text-center border border-rose-100">
+                    <p class="text-xs text-rose-600 font-bold uppercase">Incorrect</p>
+                    <p class="text-2xl font-extrabold text-rose-700 mt-1" id="res-incorrect">0</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl text-center border border-slate-200">
+                    <p class="text-xs text-slate-600 font-bold uppercase">Unattempted</p>
+                    <p class="text-2xl font-extrabold text-slate-700 mt-1" id="res-unattempted">0</p>
+                </div>
+            </div>
+
+            <!-- Graphical Representation -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-4 rounded-xl border shadow-sm">
+                    <h3 class="font-bold text-slate-700 text-sm mb-3 text-center">Accuracy Distribution</h3>
+                    <div class="w-full h-64 flex justify-center">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-slate-700 text-sm mb-3">Focus Areas & Recommendations</h3>
+                        <div id="weak-areas" class="text-sm text-slate-600 space-y-2">
+                            <!-- Weak areas analyzed -->
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t">
+                        <button onclick="downloadReportImage()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg text-sm shadow transition">
+                            Download Result Image for WhatsApp (8910587106)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Answer Keys & Explanations -->
+            <div class="border-t pt-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Detailed Answer Keys & Explanations</h3>
+                <div id="answer-keys-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Generate Captcha on load
+        let captchaCode = Math.floor(1000 + Math.random() * 9000).toString();
+        document.getElementById('captcha-display').innerText = captchaCode;
+
+        let currentCandidate = "";
+        let currentQuestionIndex = 0;
+        let timerInterval;
+        let timeLeft = 3600; // 1 hour
+
+        // Question Bank - 45 Questions covering Organic Chemistry
+        const questionBank = [
+            // Statement Based (1-10)
+            {
+                category: "Statement Based",
+                text: "Consider the following statements regarding the tetravalency of carbon:<br>I. Carbon has 4 valence electrons and can form four covalent bonds.<br>II. Carbon compounds exhibit property of catenation.<br>Which of the above statement(s) is/are correct?",
+                options: ["Only I", "Only II", "Both I and II", "Neither I nor II"],
+                answer: 2,
+                explanation: "Carbon exhibits tetravalency due to its electronic configuration (1s<sup>2</sup> 2s<sup>2</sup> 2p<sup>2</sup>) and strong catenation tendency."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: sigma ($\sigma$) bonds are stronger than pi ($\pi$) bonds.<br>Statement II: Axial overlapping of atomic orbitals leads to sigma bond formation while sideways overlapping leads to pi bond formation.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 0,
+                explanation: "Axial overlapping results in greater extent of overlapping making sigma bonds stronger than pi bonds formed by lateral overlap."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: The hybridization of carbon in ethyne is sp.<br>Statement II: Ethyne molecule is linear with a bond angle of 180°.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 0,
+                explanation: "In ethyne (C<sub>2</sub>H<sub>2</sub>), each carbon is sp hybridized, leading to a linear geometry with 180° bond angle."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Homologous series members differ by a -CH<sub>2</sub>- unit.<br>Statement II: All members of a homologous series have identical chemical properties.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 2,
+                explanation: "Members differ by CH<sub>2</sub> (mass 14 u) and share similar (not strictly identical due to molecular weight grading) chemical properties."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Heterolytic fission of a covalent bond results in the formation of free radicals.<br>Statement II: Homolytic fission results in the formation of carbocations and carbanions.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 1,
+                explanation: "Heterolytic fission forms ions (carbocations/carbanions), whereas homolytic fission forms free radicals."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Inductive effect is a permanent effect operating through sigma bonds.<br>Statement II: Electromeric effect is a temporary effect operating in the presence of an attacking reagent.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 0,
+                explanation: "Both statements are accurate definitions of inductive and electromeric electronic displacements."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Tertiary carbocations are more stable than primary carbocations.<br>Statement II: Hyperconjugation and inductive effect stabilize tertiary carbocations.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 0,
+                explanation: "Greater number of alpha-hydrogens in 3° carbocations provide more hyperconjugative structures, increasing stability."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Electrophiles are electron-deficient species seeking electron-rich centers.<br>Statement II: Nucleophiles are electron-rich species donating an electron pair.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 0,
+                explanation: "Electrophiles are Lewis acids and nucleophiles are Lewis bases."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Resonance effect involves delocalization of sigma electrons.<br>Statement II: Hyperconjugation involves delocalization of sigma electrons of C-H bond into an adjacent empty or partially filled p-orbital.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 3,
+                explanation: "Resonance involves delocalization of pi electrons or lone pairs, not sigma electrons."
+            },
+            {
+                category: "Statement Based",
+                text: "Statement I: Addition reactions are characteristic of unsaturated hydrocarbons.<br>Statement II: Substitution reactions are characteristic of saturated hydrocarbons.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                answer: 0,
+                explanation: "Alkenes/alkynes undergo addition easily, while alkanes undergo free-radical substitution."
+            },
+
+            // Assertion & Reasoning (11-15)
+            {
+                category: "Assertion & Reasoning",
+                text: "<strong>Assertion (A):</strong> Tertiary butyl carbocation is more stable than methyl carbocation.<br><strong>Reason (R):</strong> Greater the number of hyperconjugative structures, greater is the stability of carbocation.",
+                options: ["Both A and R are true and R is the correct explanation of A", "Both A and R are true but R is not the correct explanation of A", "A is true but R is false", "A is false but R is true"],
+                answer: 0,
+                explanation: "Tertiary butyl cation has 9 alpha-hydrogens giving high hyperconjugative stabilization."
+            },
+            {
+                category: "Assertion & Reasoning",
+                text: "<strong>Assertion (A):</strong> Boiling points of isomeric alkanes decrease with branching.<br><strong>Reason (R):</strong> Branching gives the molecule a spherical shape which decreases surface area and van der Waals forces.",
+                options: ["Both A and R are true and R is the correct explanation of A", "Both A and R are true but R is not the correct explanation of A", "A is true but R is false", "A is false but R is true"],
+                answer: 0,
+                explanation: "Spherical branched alkanes have lower surface contact area, reducing intermolecular van der Waals forces."
+            },
+            {
+                category: "Assertion & Reasoning",
+                text: "<strong>Assertion (A):</strong> Nitrobenzene does not undergo Friedel-Crafts reaction.<br><strong>Reason (R):</strong> Nitro group is strongly deactivating and the catalyst AlCl<sub>3</sub> coordinates with the nitro oxygen.",
+                options: ["Both A and R are true and R is the correct explanation of A", "Both A and R are true but R is not the correct explanation of A", "A is true but R is false", "A is false but R is true"],
+                answer: 0,
+                explanation: "Lewis acid catalyst AlCl<sub>3</sub> bonds with lone pairs of nitro group, deactivating the catalyst."
+            },
+            {
+                category: "Assertion & Reasoning",
+                text: "<strong>Assertion (A):</strong> Alkynes show acidity with strong bases like NaNH<sub>2</sub>.<br><strong>Reason (R):</strong> sp hybridized carbon in alkynes has higher electronegativity than sp<sup>2</sup> and sp<sup>3</sup> carbons.",
+                options: ["Both A and R are true and R is the correct explanation of A", "Both A and R are true but R is not the correct explanation of A", "A is true but R is false", "A is false but R is true"],
+                answer: 0,
+                explanation: "Higher s-character (50%) in sp carbon pulls shared electrons closer, making terminal hydrogen acidic."
+            },
+            {
+                category: "Assertion & Reasoning",
+                text: "<strong>Assertion (A):</strong> Phenol is more acidic than ethanol.<br><strong>Reason (R):</strong> Phenoxide ion is stabilized by resonance while ethoxide ion is not.",
+                options: ["Both A and R are true and R is the correct explanation of A", "Both A and R are true but R is not the correct explanation of A", "A is true but R is false", "A is false but R is true"],
+                answer: 0,
+                explanation: "Delocalization of negative charge into the benzene ring stabilizes phenoxide ion significantly."
+            },
+
+            // Case Study Based (16-20)
+            {
+                category: "Case Study Based",
+                text: "<strong>Case Study:</strong> Organic compounds are classified based on carbon skeletons and functional groups. Consider compound A (CH<sub>3</sub>COCH<sub>3</sub>) and compound B (CH<sub>3</sub>CHO).<br>Question: What functional groups are present in compound A and B respectively?",
+                options: ["Ketone and Aldehyde", "Aldehyde and Ketone", "Alcohol and Ether", "Carboxylic acid and Ester"],
+                answer: 0,
+                explanation: "CH<sub>3</sub>COCH<sub>3</sub> is propanone (ketone) and CH<sub>3</sub>CHO is ethanal (aldehyde)."
+            },
+            {
+                category: "Case Study Based",
+                text: "<strong>Case Study:</strong> Isomerism plays a major role in organic reactivity. Pentane (C<sub>5</sub>H<sub>12</sub>) exhibits chain isomerism.<br>Question: How many chain isomers does pentane have?",
+                options: ["2", "3", "4", "5"],
+                answer: 1,
+                explanation: "Pentane has 3 isomers: n-pentane, isopentane (2-methylbutane), and neopentane (2,2-dimethylpropane)."
+            },
+            {
+                category: "Case Study Based",
+                text: "<strong>Case Study:</strong> Covalent bond fission can occur homolytically or heterolytically. Free radicals are formed in UV light.<br>Question: Which species is formed during homolytic cleavage of chlorine gas (Cl<sub>2</sub>)?",
+                options: ["Chloride ion (Cl<sup>-</sup>)", "Chloronium ion (Cl<sup>+</sup>)", "Chlorine free radical (Cl•)", "Chlorine molecule"],
+                answer: 2,
+                explanation: "Homolytic fission splits the shared pair equally, yielding two chlorine free radicals."
+            },
+            {
+                category: "Case Study Based",
+                text: "<strong>Case Study:</strong> Electronic displacement effects govern acidity and basicity. Groups with +I effect donate electrons.<br>Question: Which of the following groups exhibits the strongest +I effect?",
+                options: ["-CH<sub>3</sub>", "-CH<sub>2</sub>CH<sub>3</sub>", "-C(CH<sub>3</sub>)<sub>3</sub>", "-H"],
+                answer: 2,
+                explanation: "Tertiary-butyl group [-C(CH<sub>3</sub>)<sub>3</sub>] has maximum alkyl substitution, giving the strongest +I effect."
+            },
+            {
+                category: "Case Study Based",
+                text: "<strong>Case Study:</strong> Reaction intermediates like carbocations have a vacant p-orbital and are sp<sup>2</sup> hybridized.<br>Question: What is the geometric shape of a simple carbocation like CH<sub>3</sub><sup>+</sup>?",
+                options: ["Tetrahedral", "Planar triangular", "Pyramidal", "Linear"],
+                answer: 1,
+                explanation: "Carbocations are sp<sup>2</sup> hybridized with trigonal planar geometry."
+            },
+
+            // Critical Thinking Level (21-35)
+            {
+                category: "Critical Thinking",
+                text: "What is the IUPAC name of the compound CH<sub>3</sub>-CH(CH<sub>3</sub>)-CH<sub>2</sub>-CH(OH)-CH<sub>3</sub>?",
+                options: ["4-methylpentan-2-ol", "2-methylpentan-4-ol", "4-methylpentan-3-ol", "2-methylpentan-3-ol"],
+                answer: 0,
+                explanation: "Numbering starts from the end nearest to the principal functional group (-OH at C2). Thus, 4-methylpentan-2-ol."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Which of the following compounds will exhibit geometrical (cis-trans) isomerism?",
+                options: ["2-methylpropene", "but-2-ene", "but-1-ene", "2-methylbut-2-ene"],
+                answer: 1,
+                explanation: "But-2-ene (CH<sub>3</sub>-CH=CH-CH<sub>3</sub>) has different groups attached to each doubly bonded carbon atom, showing cis-trans isomerism."
+            },
+            {
+                category: "Critical Thinking",
+                text: "The correct stability order of free radicals (CH<sub>3</sub>)<sub>3</sub>C•, (CH<sub>3</sub>)<sub>2</sub>CH•, CH<sub>3</sub>CH<sub>2</sub>•, •CH<sub>3</sub> is:",
+                options: ["(CH<sub>3</sub>)<sub>3</sub>C• > (CH<sub>3</sub>)<sub>2</sub>CH• > CH<sub>3</sub>CH<sub>2</sub>• > •CH<sub>3</sub>", "•CH<sub>3</sub> > CH<sub>3</sub>CH<sub>2</sub>• > (CH<sub>3</sub>)<sub>2</sub>CH• > (CH<sub>3</sub>)<sub>3</sub>C•", "(CH<sub>3</sub>)<sub>2</sub>CH• > (CH<sub>3</sub>)<sub>3</sub>C• > CH<sub>3</sub>CH<sub>2</sub>• > •CH<sub>3</sub>", "CH<sub>3</sub>CH<sub>2</sub>• > (CH<sub>3</sub>)<sub>3</sub>C• > •CH<sub>3</sub> > (CH<sub>3</sub>)<sub>2</sub>CH•"],
+                answer: 0,
+                explanation: "Free radicals are stabilized by hyperconjugation; tertiary free radical has 9 alpha-hydrogens making it most stable."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Which among the following is a nucleophile?",
+                options: ["BF<sub>3</sub>", "AlCl<sub>3</sub>", "NH<sub>3</sub>", "H<sup>+</sup>"],
+                answer: 2,
+                explanation: "Ammonia (NH<sub>3</sub>) has a lone pair of electrons on nitrogen, acting as a Lewis base/nucleophile."
+            },
+            {
+                category: "Critical Thinking",
+                text: "The number of sigma ($\sigma$) and pi ($\pi$) bonds in benzene (C<sub>6</sub>H<sub>6</sub>) is:",
+                options: ["12 $\sigma$, 3 $\pi$", "6 $\sigma$, 6 $\pi$", "12 $\sigma$, 6 $\pi$", "6 $\sigma$, 3 $\pi$"],
+                answer: 0,
+                explanation: "Benzene has 6 C-C sigma bonds, 6 C-H sigma bonds (total 12 $\sigma$) and 3 alternate $\pi$ bonds."
+            },
+            {
+                category: "Critical Thinking",
+                text: "What is the hybridization of carbon atoms in allene (CH<sub>2</sub>=C=CH<sub>2</sub>)?",
+                options: ["All sp<sup>2</sup>", "Terminal sp<sup>2</sup>, central sp", "Terminal sp, central sp<sup>2</sup>", "All sp<sup>3</sup>"],
+                answer: 1,
+                explanation: "Terminal carbons are connected by double bonds (sp<sup>2</sup>), while central carbon participates in two double bonds (sp hybridized, linear)."
+            },
+            {
+                category: "CriticalThinking",
+                text: "Which of the following compounds shows optical isomerism?",
+                options: ["2-chloropropane", "1-chlorobutane", "2-chlorobutane", "1-chloro-2-methylpropane"],
+                answer: 2,
+                explanation: "2-chlorobutane contains a chiral carbon atom (bonded to four different groups: -H, -Cl, -CH<sub>3</sub>, -CH<sub>2</sub>CH<sub>3</sub>)."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Which effect is responsible for the directive influence of groups in aromatic electrophilic substitution?",
+                options: ["Inductive effect only", "Electromeric effect only", "Resonance and Inductive effect", "Only gravity"],
+                answer: 2,
+                explanation: "Both resonance (+R/-R) and inductive (+I/-I) effects dictate orientation, though resonance usually dominates for activating groups."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Identify the electrophile among the following:",
+                options: ["H<sub>2</sub>O", "R-NH<sub>2</sub>", "NO<sub>2</sub><sup>+</sup>", "CN<sup>-</sup>"],
+                answer: 2,
+                explanation: "Nitronium ion (NO<sub>2</sub><sup>+</sup>) is positively charged and electron deficient, acting as a strong electrophile."
+            },
+            {
+                category: "Critical Thinking",
+                text: "The IUPAC name of CH<sub>3</sub>-O-CH(CH<sub>3</sub>)<sub>2</sub> is:",
+                options: ["2-methoxypropane", "1-methoxypropane", "isopropyl methyl ether", "propyl methyl ether"],
+                answer: 0,
+                explanation: "According to IUPAC rules, ethers are named as alkoxyalkanes. Here, methoxy is attached to propane at carbon 2."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Which of the following carbocations is most stable?",
+                options: ["CH<sub>3</sub>-CH<sub>2</sub><sup>+</sup>", "(CH<sub>3</sub>)<sub>2</sub>CH<sup>+</sup>", "(CH<sub>3</sub>)<sub>3</sub>C<sup>+</sup>", "CH<sub>3</sub><sup>+</sup>"],
+                answer: 2,
+                explanation: "Tertiary butyl carbocation (3°) has 9 alpha-hydrogens, providing maximum hyperconjugative stability."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Hyperconjugation is also known as:",
+                options: ["No-bond resonance", "Baker-Nathan effect", "Both A and B", "Inductomeric effect"],
+                answer: 2,
+                explanation: "Hyperconjugation was first proposed by Baker and Nathan and is referred to as no-bond resonance."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Which of the following functional groups has the highest priority in IUPAC nomenclature?",
+                options: ["-COOH", "-SO<sub>3</sub>H", "-CHO", "-OH"],
+                answer: 0,
+                explanation: "Carboxylic acid (-COOH) tops the priority table in IUPAC nomenclature."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Homolytic fission of carbon-carbon bond in ethane requires homolytic bond dissociation energy. The resulting fragment is:",
+                options: ["Methyl carbocation", "Methyl carbanion", "Methyl free radical", "Methane molecule"],
+                answer: 2,
+                explanation: "Homolytic fission of ethane yields two methyl free radicals (CH<sub>3</sub>•)."
+            },
+            {
+                category: "Critical Thinking",
+                text: "Which molecule has zero dipole moment?",
+                options: ["Chlorobenzene", "1,4-dichlorobenzene", "1,2-dichlorobenzene", "1,3-dichlorobenzene"],
+                answer: 1,
+                explanation: "In 1,4-dichlorobenzene, the equal dipole moments of polar C-Cl bonds cancel out symmetrically in opposite directions."
+            },
+
+            // Diagram / Structure Based (36-45)
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Observe the structural formula of lactic acid: CH<sub>3</sub>-CH(OH)-COOH.<br>Question: How many chiral centers (asymmetric carbon atoms) are present in lactic acid?",
+                options: ["0", "1", "2", "3"],
+                answer: 1,
+                explanation: "The central carbon C-2 is bonded to four different groups: -H, -OH, -CH<sub>3</sub>, and -COOH, making it chiral."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Consider the resonance structure of acetate ion (CH<sub>3</sub>COO<sup>-</sup>).<br>Question: What is the bond order of the carbon-oxygen bonds in the carboxylate anion due to resonance?",
+                options: ["1.0", "2.0", "1.5", "0.5"],
+                answer: 2,
+                explanation: "Due to resonance equivalence between the two oxygen atoms, the C-O bond order is exactly 1.5."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> In a chair conformation of cyclohexane, how many axial and equatorial C-H bonds are present respectively?",
+                options: ["6 axial, 6 equatorial", "3 axial, 9 equatorial", "9 axial, 3 equatorial", "12 axial, 0 equatorial"],
+                answer: 0,
+                explanation: "Cyclohexane has 12 total hydrogens: 6 directed vertically (axial) and 6 directed radially outward (equatorial)."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Consider furan (C<sub>4</sub>H<sub>4</sub>O), a heterocyclic aromatic compound.<br>Question: What is the hybridization of the oxygen heteroatom in furan?",
+                options: ["sp<sup>3</sup>", "sp<sup>2</sup>", "sp", "Unhybridized"],
+                answer: 1,
+                explanation: "One lone pair of oxygen participates in aromatic sextet (delocalization), while the other resides in an sp<sup>2</sup> orbital."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Examine the structure of neo-pentane: C(CH<sub>3</sub>)<sub>4</sub>.<br>Question: How many primary (1°) hydrogen atoms are present in neo-pentane?",
+                options: ["3", "6", "9", "12"],
+                answer: 3,
+                explanation: "Neo-pentane has 4 methyl groups, each having 3 hydrogens, totaling 12 primary hydrogen atoms."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Consider pyridine (C<sub>5</sub>H<sub>5</sub>N).<br>Question: What is the nature of the nitrogen lone pair in pyridine regarding aromaticity?",
+                options: ["Participates in aromatic sextet", "Resides in sp<sup>2</sup> orbital perpendicular to ring pi system", "Delocalized into ring", "Does not exist"],
+                answer: 1,
+                explanation: "Pyridine nitrogen's lone pair is in an sp<sup>2</sup> hybrid orbital outside the ring plane, not part of the aromatic $\pi$-system."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Look at 1,3-butadiene (CH<sub>2</sub>=CH-CH=CH<sub>2</sub>).<br>Question: Which type of conjugation is exhibited by 1,3-butadiene?",
+                options: ["p-p conjugation ($\pi-\pi$ conjugation)", "p-sigma conjugation", "sigma-sigma conjugation", "No conjugation"],
+                answer: 0,
+                explanation: "Alternate double and single bonds allow overlapping of adjacent p-orbitals ($\pi-\pi$ conjugation)."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> In the structure of pyrrole (C<sub>4</sub>H<sub>5</sub>N), how many $\pi$-electrons contribute to aromaticity?",
+                options: ["2", "4", "6", "8"],
+                answer: 2,
+                explanation: "Pyrrole nitrogen contributes 2 electrons from its lone pair along with 4 electrons from two double bonds, satisfying Hückel's rule (4n+2 = 6)."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Consider the molecule 2-chloro-2-methylpropane [(CH<sub>3</sub>)<sub>3</sub>C-Cl].<br>Question: Undergoing hydrolysis, what reaction intermediate is primarily formed?",
+                options: ["Primary carbocation", "Secondary carbocation", "Tertiary carbocation", "Free radical"],
+                answer: 2,
+                explanation: "Tertiary alkyl halides undergo S<sub>N</sub>1 mechanism passing through a stable tertiary carbocation intermediate."
+            },
+            {
+                category: "Diagram Based",
+                text: "<strong>Structure Analysis:</strong> Examine the structure of toluene (C<sub>6</sub>H<sub>5</sub>CH<sub>3</sub>).<br>Question: The methyl group attached to benzene ring is activating towards electrophilic aromatic substitution due to:",
+                options: ["Only Inductive effect", "Hyperconjugation and +I effect", "Only Resonance", "Strong -I effect"],
+                answer: 1,
+                explanation: "Toluene's methyl group activates the benzene ring via hyperconjugation and electron-releasing (+I) effect."
+            }
+        ];
+
+        // Shuffle questions for each session to randomize sequence
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        let userAnswers = new Array(questionBank.length).fill(null);
+        let questionStatus = new Array(questionBank.length).fill('not-visited'); // not-visited, not-answered, answered, marked
+
+        // Start Exam Function
+        function startExam(e) {
+            e.preventDefault();
+            const name = document.getElementById('candidate-name').value.trim();
+            const captchaInput = document.getElementById('captcha-input').value.trim();
+            const password = document.getElementById('exam-password').value.trim();
+
+            // Password verification: DDMMYYYY format for today (October 20, 2026 -> 20102026)
+            if (password !== "20102026") {
+                alert("Incorrect exam password! Please enter the current date in DDMMYYYY format (e.g., 20102026).");
+                return;
+            }
+
+            if (captchaInput !== captchaCode) {
+                alert("Incorrect Captcha code! Please try again.");
+                captchaCode = Math.floor(1000 + Math.random() * 9000).toString();
+                document.getElementById('captcha-display').innerText = captchaCode;
+                document.getElementById('captcha-input').value = "";
+                return;
+            }
+
+            if (!name) {
+                alert("Please enter your candidate name.");
+                return;
+            }
+
+            currentCandidate = name;
+            document.getElementById('nav-candidate-name').innerText = currentCandidate;
+
+            // Randomize questions for this user session
+            shuffleArray(questionBank);
+
+            // Hide login, show exam
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('exam-screen').classList.remove('hidden');
+
+            // Setup Watermark
+            let wmText = `${currentCandidate} - 8910587106 - NEET CBT - `;
+            document.getElementById('watermark').innerText = wmText.repeat(50);
+
+            // Force Fullscreen
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Fullscreen request denied or restricted.");
+                });
+            }
+
+            // Start Timer
+            startTimer();
+            loadQuestion(0);
+            renderPalette();
+        }
+
+        // Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById('timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time is up! Submitting your exam automatically.");
+                    submitExam();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Tab Switching & Security Detection
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                alert("WARNING: Tab switching or leaving the exam window is strictly prohibited and recorded!");
+            }
+        });
+
+        // Load Question
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            if (questionStatus[index] === 'not-visited') {
+                questionStatus[index] = 'not-answered';
+            }
+
+            const q = questionBank[index];
+            document.getElementById('current-q-num').innerText = index + 1;
+            document.getElementById('q-category').innerText = q.category;
+            document.getElementById('question-text').innerHTML = q.text;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                let isChecked = userAnswers[index] === idx ? 'checked' : '';
+                let borderClass = userAnswers[index] === idx ? 'border-indigo-600 bg-indigo-50' : 'border-slate-200 hover:bg-slate-50';
+                optionsContainer.innerHTML += `
+                    <label class="flex items-center p-3.5 border rounded-xl cursor-pointer transition ${borderClass}">
+                        <input type="radio" name="exam-option" value="${idx}" ${isChecked} onclick="selectOption(${idx})" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-3 text-slate-800 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+
+            renderPalette();
+        }
+
+        function selectOption(optIndex) {
+            userAnswers[currentQuestionIndex] = optIndex;
+            if (questionStatus[currentQuestionIndex] !== 'marked') {
+                questionStatus[currentQuestionIndex] = 'answered';
+            }
+            renderPalette();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questionBank.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function markForReview() {
+            questionStatus[currentQuestionIndex] = 'marked';
+            renderPalette();
+            if (currentQuestionIndex < questionBank.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIndex] = null;
+            questionStatus[currentQuestionIndex] = 'not-answered';
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // Palette Rendering
+        function renderPalette() {
+            const grid = document.getElementById('palette-grid');
+            grid.innerHTML = '';
+            questionStatus.forEach((status, idx) => {
+                let dotColor = 'dot-gray';
+                if (status === 'answered') dotColor = 'dot-green';
+                else if (status === 'not-answered') dotColor = 'dot-red';
+                else if (status === 'marked') dotColor = 'dot-orange';
+
+                let ring = idx === currentQuestionIndex ? 'ring-2 ring-indigo-900' : '';
+
+                grid.innerHTML += `
+                    <button onclick="loadQuestion(${idx})" class="w-9 h-9 rounded-lg text-white font-bold text-xs ${dotColor} ${ring} flex items-center justify-center shadow-sm transition">
+                        ${idx + 1}
+                    </button>
+                `;
+            });
+        }
+
+        function confirmSubmit() {
+            if (confirm("Are you sure you want to submit the exam?")) {
+                submitExam();
+            }
+        }
+
+        // Submit Exam & Generate Result
+        function submitExam() {
+            clearInterval(timerInterval);
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+            let topicMistakes = {};
+
+            questionBank.forEach((q, idx) => {
+                if (userAnswers[idx] === null) {
+                    unattempted++;
+                } else if (userAnswers[idx] === q.answer) {
+                    correct++;
+                } else {
+                    incorrect++;
+                    topicMistakes[q.category] = (topicMistakes[q.category] || 0) + 1;
+                }
+            });
+
+            let totalScore = (correct * 4) - (incorrect * 1);
+
+            document.getElementById('res-candidate-name').innerText = currentCandidate;
+            document.getElementById('res-score').innerText = totalScore;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-incorrect').innerText = incorrect;
+            document.getElementById('res-unattempted').innerText = unattempted;
+
+            // Render Chart
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct (+4)', 'Incorrect (-1)', 'Unattempted (0)'],
+                    datasets: [{
+                        data: [correct, incorrect, unattempted],
+                        backgroundColor: ['#22c55e', '#ef4444', '#9ca3af']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Weak Areas Analysis
+            let weakAreasHTML = "";
+            let sortedMistakes = Object.entries(topicMistakes).sort((a,b) => b[1] - a[1]);
+            if (sortedMistakes.length > 0) {
+                weakAreasHTML = `<p class="font-semibold text-rose-700">Areas requiring urgent revision:</p><ul class="list-disc pl-5 mt-1 space-y-1">`;
+                sortedMistakes.forEach(([cat, count]) => {
+                    weakAreasHTML += `<li><strong>${cat}</strong>: ${count} incorrect response(s). Revise core textbook concepts.</li>`;
+                });
+                weakAreasHTML += `</ul>`;
+            } else {
+                weakAreasHTML = `<p class="font-semibold text-emerald-700">Outstanding performance! Zero errors recorded across all topics.</p>`;
+            }
+            document.getElementById('weak-areas').innerHTML = weakAreasHTML;
+
+            // Detailed Answer Keys
+            const akList = document.getElementById('answer-keys-list');
+            akList.innerHTML = '';
+            questionBank.forEach((q, idx) => {
+                let userAnsText = userAnswers[idx] !== null ? q.options[userAnswers[idx]] : 'Not Attempted';
+                let correctAnsText = q.options[q.answer];
+                let isCorrect = userAnswers[idx] === q.answer;
+                let badgeColor = isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800';
+
+                akList.innerHTML += `
+                    <div class="p-4 border rounded-xl bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-indigo-900">Q${idx + 1}. [${q.category}]</span>
+                            <span class="text-xs px-2 py-1 rounded font-semibold ${badgeColor}">${isCorrect ? 'Correct (+4)' : (userAnswers[idx] === null ? 'Unattempted (0)' : 'Incorrect (-1)')}</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800">${q.text}</p>
+                        <div class="text-xs text-slate-600 space-y-1">
+                            <p><strong>Your Answer:</strong> <span class="${isCorrect ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold'}">${userAnsText}</span></p>
+                            <p><strong>Correct Answer:</strong> <span class="text-emerald-700 font-bold">${correctAnsText}</span></p>
+                            <p><strong>Explanation:</strong> ${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Download Report Card as Image for WhatsApp (8910587106)
+        function downloadReportImage() {
+            const reportElement = document.getElementById('report-card');
+            html2canvas(reportElement, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${currentCandidate}_NEET_Chemistry_Report.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+                alert("Report image downloaded successfully! Please share this image directly to WhatsApp number 8910587106.");
+            });
+        }
+    </script>
+</body>
+</html>
